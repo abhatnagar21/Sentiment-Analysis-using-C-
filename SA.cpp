@@ -2,6 +2,8 @@
 #include <string>
 #include <unordered_map>
 #include <sstream>
+#include <algorithm>
+#include <cctype>
 using namespace std;
 
 // Function to load sentiment keywords into an unordered_map
@@ -33,9 +35,9 @@ void loadSentimentWords(unordered_map<string, int>& sentimentDict) {
     sentimentDict["grateful"] = 1;
     sentimentDict["splendid"] = 1;
     sentimentDict["incredible"] = 1;
-    
+
     // Negative words with a score of -1
-   sentimentDict["bad"] = -1;
+    sentimentDict["bad"] = -1;
     sentimentDict["terrible"] = -1;
     sentimentDict["awful"] = -1;
     sentimentDict["horrible"] = -1;
@@ -70,6 +72,17 @@ void loadSentimentWords(unordered_map<string, int>& sentimentDict) {
     sentimentDict["bitter"] = -1;
 }
 
+// Helper function to remove punctuation from a word
+string removePunctuation(const string& word) {
+    string cleanedWord;
+    for (char c : word) {
+        if (!ispunct(c)) {
+            cleanedWord += c;
+        }
+    }
+    return cleanedWord;
+}
+
 // Function to calculate the sentiment score of the input text
 int analyzeSentiment(const string& text, const unordered_map<string, int>& sentimentDict) {
     int sentimentScore = 0;
@@ -78,6 +91,13 @@ int analyzeSentiment(const string& text, const unordered_map<string, int>& senti
 
     // Process each word in the input text
     while (ss >> word) {
+        // Convert word to lowercase
+        transform(word.begin(), word.end(), word.begin(), ::tolower);
+        
+        // Remove punctuation from the word
+        word = removePunctuation(word);
+
+        // Check if the cleaned word exists in the sentiment dictionary
         if (sentimentDict.find(word) != sentimentDict.end()) {
             sentimentScore += sentimentDict.at(word);
         }
