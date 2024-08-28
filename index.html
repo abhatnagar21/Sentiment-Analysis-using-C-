@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 50px;
+            background-color: #f4e9e9;
+            color: #333;
+        }
+        h1 {
+            color: #4a4a4a;
+            text-align: center;
+            font-size: 2.5em;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        textarea {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #80bdff;
+            box-shadow: 0 5px 15px rgba(12, 227, 163, 0.25);
+            outline: none;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            animation: bounceIn 1.5s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        #result {
+            margin-top: 30px;
+            font-size: 22px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+        }
+        #result.positive {
+            color: #28a745;
+        }
+        #result.negative {
+            color: #dc3545;
+        }
+        #result.neutral {
+            color: #6c757d;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounceIn {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Sentiment Analysis</h1>
+    <form id="sentimentForm">
+        <textarea id="inputText" rows="4" placeholder="Enter text for sentiment analysis..."></textarea>
+        <button type="button" onclick="analyzeSentiment()">Analyze Sentiment</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        function analyzeSentiment() {
+            const inputText = document.getElementById("inputText").value;
+            const positiveWords = ["excellent", "wonderful", "great", "fantastic", "amazing", "outstanding", "superb", "brilliant", "terrific", "marvelous", "fabulous", "joyful", "delightful", "positive", "happy", "cheerful", "perfect", "magnificent", "lovely", "enjoyable", "admirable", "enthusiastic", "prosperous", "grateful", "splendid", "incredible"];
+            const negativeWords = ["bad", "terrible", "awful", "horrible", "poor", "dreadful", "disappointing", "unpleasant", "lousy", "atrocious", "subpar", "inferior", "unsatisfactory", "regretful", "miserable", "pathetic", "nasty", "deficient", "unfortunate", "sad", "depressed", "upset", "frustrated", "angry", "annoyed", "distressed", "disheartened", "discontented", "displeased", "fuming", "agitated", "desolate", "bitter"];
+            let sentimentScore = 0;
+
+            // Split the input text into words and analyze sentiment
+            const words = inputText.toLowerCase().split(/\s+/);
+            words.forEach(word => {
+                word = word.replace(/[.,!?;:()]/g, ""); // Remove punctuation
+                if (positiveWords.includes(word)) {
+                    sentimentScore += 1;
+                } else if (negativeWords.includes(word)) {
+                    sentimentScore -= 1;
+                }
+            });
+
+            // Display the sentiment result
+            const resultDiv = document.getElementById("result");
+            resultDiv.style.opacity = "0"; // Reset opacity for animation
+            resultDiv.innerHTML = `Sentiment score: ${sentimentScore}`;
+            if (sentimentScore > 0) {
+                resultDiv.innerHTML += "<br>The sentiment is <b>Positive</b>.";
+                resultDiv.className = "positive";
+            } else if (sentimentScore < 0) {
+                resultDiv.innerHTML += "<br>The sentiment is <b>Negative</b>.";
+                resultDiv.className = "negative";
+            } else {
+                resultDiv.innerHTML += "<br>The sentiment is <b>Neutral</b>.";
+                resultDiv.className = "neutral";
+            }
+
+            // Trigger animation
+            setTimeout(() => {
+                resultDiv.style.opacity = "1";
+            }, 100); // Delay to ensure animation triggers
+        }
+    </script>
+</body>
+</html>
