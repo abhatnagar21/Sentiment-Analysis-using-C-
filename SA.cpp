@@ -4,82 +4,56 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+
 using namespace std;
 
 // Function to load sentiment keywords into an unordered_map
 void loadSentimentWords(unordered_map<string, int>& sentimentDict) {
     // Positive words with a score of +1
-    sentimentDict["excellent"] = 1;
-    sentimentDict["wonderful"] = 1;
-    sentimentDict["great"] = 1;
-    sentimentDict["fantastic"] = 1;
-    sentimentDict["amazing"] = 1;
-    sentimentDict["outstanding"] = 1;
-    sentimentDict["superb"] = 1;
-    sentimentDict["brilliant"] = 1;
-    sentimentDict["terrific"] = 1;
-    sentimentDict["marvelous"] = 1;
-    sentimentDict["fabulous"] = 1;
-    sentimentDict["joyful"] = 1;
-    sentimentDict["delightful"] = 1;
-    sentimentDict["positive"] = 1;
-    sentimentDict["happy"] = 1;
-    sentimentDict["cheerful"] = 1;
-    sentimentDict["perfect"] = 1;
-    sentimentDict["magnificent"] = 1;
-    sentimentDict["lovely"] = 1;
-    sentimentDict["enjoyable"] = 1;
-    sentimentDict["admirable"] = 1;
-    sentimentDict["enthusiastic"] = 1;
-    sentimentDict["prosperous"] = 1;
-    sentimentDict["grateful"] = 1;
-    sentimentDict["splendid"] = 1;
-    sentimentDict["incredible"] = 1;
-
+    const string positiveWords[] = {
+        "excellent", "wonderful", "great", "fantastic", "amazing", "outstanding", 
+        "superb", "brilliant", "terrific", "marvelous", "fabulous", "joyful", 
+        "delightful", "positive", "happy", "cheerful", "perfect", "magnificent", 
+        "lovely", "enjoyable", "admirable", "enthusiastic", "prosperous", 
+        "grateful", "splendid", "incredible", "love", "appealing", "awesome", 
+        "blissful", "bright", "commending", "compassionate", "courageous", 
+        "encouraging", "elevated", "energetic", "engaging", "exquisite", 
+        "flourishing", "generous", "graceful", "heartwarming", "inspiring", 
+        "joyous", "luminous", "optimistic", "radiant", "reliable", 
+        "satisfying", "spirited", "successful", "triumphant", "uplifting", 
+        "vibrant", "wondrous"
+    };
+    
     // Negative words with a score of -1
-    sentimentDict["bad"] = -1;
-    sentimentDict["terrible"] = -1;
-    sentimentDict["awful"] = -1;
-    sentimentDict["horrible"] = -1;
-    sentimentDict["poor"] = -1;
-    sentimentDict["dreadful"] = -1;
-    sentimentDict["disappointing"] = -1;
-    sentimentDict["unpleasant"] = -1;
-    sentimentDict["lousy"] = -1;
-    sentimentDict["atrocious"] = -1;
-    sentimentDict["subpar"] = -1;
-    sentimentDict["inferior"] = -1;
-    sentimentDict["unsatisfactory"] = -1;
-    sentimentDict["regretful"] = -1;
-    sentimentDict["miserable"] = -1;
-    sentimentDict["pathetic"] = -1;
-    sentimentDict["nasty"] = -1;
-    sentimentDict["deficient"] = -1;
-    sentimentDict["unfortunate"] = -1;
-    sentimentDict["sad"] = -1;
-    sentimentDict["depressed"] = -1;
-    sentimentDict["upset"] = -1;
-    sentimentDict["frustrated"] = -1;
-    sentimentDict["angry"] = -1;
-    sentimentDict["annoyed"] = -1;
-    sentimentDict["distressed"] = -1;
-    sentimentDict["disheartened"] = -1;
-    sentimentDict["discontented"] = -1;
-    sentimentDict["displeased"] = -1;
-    sentimentDict["fuming"] = -1;
-    sentimentDict["agitated"] = -1;
-    sentimentDict["desolate"] = -1;
-    sentimentDict["bitter"] = -1;
+    const string negativeWords[] = {
+        "bad", "terrible", "awful", "horrible", "poor", "dreadful", 
+        "disappointing", "unpleasant", "lousy", "atrocious", "subpar", 
+        "inferior", "unsatisfactory", "regretful", "miserable", "pathetic", 
+        "nasty", "deficient", "unfortunate", "sad", "depressed", "upset", 
+        "frustrated", "angry", "annoyed", "distressed", "disheartened", 
+        "discontented", "displeased", "fuming", "agitated", "desolate", 
+        "bitter", "annoying", "apathetic", "bizarre", "clumsy", "dismal", 
+        "dismaying", "dull", "frightening", "grim", "hopeless", "irritating", 
+        "melancholic", "monotonous", "neglectful", "obnoxious", "repugnant", 
+        "resentful", "shameful", "tedious", "troublesome", "unreliable", 
+        "vexing", "worrisome", "worthless"
+    };
+
+    // Assign sentiment scores
+    for (const auto& word : positiveWords) {
+        sentimentDict[word] = 1;
+    }
+    for (const auto& word : negativeWords) {
+        sentimentDict[word] = -1;
+    }
 }
 
 // Helper function to remove punctuation from a word
 string removePunctuation(const string& word) {
     string cleanedWord;
-    for (char c : word) {
-        if (!ispunct(c)) {
-            cleanedWord += c;
-        }
-    }
+    copy_if(word.begin(), word.end(), back_inserter(cleanedWord), [](char c) {
+        return !ispunct(c);
+    });
     return cleanedWord;
 }
 
@@ -98,7 +72,7 @@ int analyzeSentiment(const string& text, const unordered_map<string, int>& senti
         word = removePunctuation(word);
 
         // Check if the cleaned word exists in the sentiment dictionary
-        if (sentimentDict.find(word) != sentimentDict.end()) {
+        if (sentimentDict.count(word)) {
             sentimentScore += sentimentDict.at(word);
         }
     }
@@ -113,6 +87,11 @@ int main() {
     string inputText;
     cout << "Enter text for sentiment analysis: ";
     getline(cin, inputText);
+
+    if (inputText.empty()) {
+        cout << "No input provided." << endl;
+        return 1;
+    }
 
     int score = analyzeSentiment(inputText, sentimentDict);
 
