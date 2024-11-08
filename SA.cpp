@@ -6,11 +6,8 @@
 #include <cctype>
 
 using namespace std;
-
-// Function to load sentiment keywords into an unordered_map
-void loadSentimentWords(unordered_map<string, int>& sentimentDict) {
-    // Positive words with a score of +1
-    const string positiveWords[] = {
+void loadsentimentwords(unordered_map<string, int>& sentimentdict) {
+    const string positivewords[] = {
         "excellent", "wonderful", "great", "fantastic", "amazing", "outstanding", 
         "superb", "brilliant", "terrific", "marvelous", "fabulous", "joyful", 
         "delightful", "positive", "happy", "cheerful", "perfect", "magnificent", 
@@ -24,8 +21,7 @@ void loadSentimentWords(unordered_map<string, int>& sentimentDict) {
         "vibrant", "wondrous"
     };
     
-    // Negative words with a score of -1
-    const string negativeWords[] = {
+    const string negativewords[] = {
         "bad", "terrible", "awful", "horrible", "poor", "dreadful", 
         "disappointing", "unpleasant", "lousy", "atrocious", "subpar", 
         "inferior", "unsatisfactory", "regretful", "miserable", "pathetic", 
@@ -39,27 +35,26 @@ void loadSentimentWords(unordered_map<string, int>& sentimentDict) {
         "vexing", "worrisome", "worthless"
     };
 
-    // Assign sentiment scores
-    for (const auto& word : positiveWords) {
-        sentimentDict[word] = 1;
+    for (const auto& word : positivewords) {
+        sentimentdict[word] = 1;
     }
-    for (const auto& word : negativeWords) {
-        sentimentDict[word] = -1;
+    for (const auto& word : negativewords) {
+        sentimentdict[word] = -1;
     }
 }
 
 // Helper function to remove punctuation from a word
-string removePunctuation(const string& word) {
-    string cleanedWord;
-    copy_if(word.begin(), word.end(), back_inserter(cleanedWord), [](char c) {
+string removepunctuation(const string& word) {
+    string cleanedword;
+    copy_if(word.begin(), word.end(), back_inserter(cleanedword), [](char c) {
         return !ispunct(c);
     });
-    return cleanedWord;
+    return cleanedword;
 }
 
 // Function to calculate the sentiment score of the input text
-int analyzeSentiment(const string& text, const unordered_map<string, int>& sentimentDict) {
-    int sentimentScore = 0;
+int analyzesentiment(const string& text, const unordered_map<string, int>& sentimentdict) {
+    int sentimentscore = 0;
     string word;
     stringstream ss(text);
 
@@ -69,31 +64,31 @@ int analyzeSentiment(const string& text, const unordered_map<string, int>& senti
         transform(word.begin(), word.end(), word.begin(), ::tolower);
         
         // Remove punctuation from the word
-        word = removePunctuation(word);
+        word = removepunctuation(word);
 
         // Check if the cleaned word exists in the sentiment dictionary
-        if (sentimentDict.count(word)) {
-            sentimentScore += sentimentDict.at(word);
+        if (sentimentdict.count(word)) {
+            sentimentscore += sentimentdict.at(word);
         }
     }
     
-    return sentimentScore;
+    return sentimentscore;
 }
 
 int main() {
-    unordered_map<string, int> sentimentDict;
-    loadSentimentWords(sentimentDict);
+    unordered_map<string, int> sentimentdict;
+    loadsentimentwords(sentimentdict);
     
-    string inputText;
+    string inputtext;
     cout << "Enter text for sentiment analysis: ";
-    getline(cin, inputText);
+    getline(cin, inputtext);
 
-    if (inputText.empty()) {
+    if (inputtext.empty()) {
         cout << "No input provided." << endl;
         return 1;
     }
 
-    int score = analyzeSentiment(inputText, sentimentDict);
+    int score = analyzesentiment(inputtext, sentimentdict);
 
     cout << "Sentiment score: " << score << endl;
 
